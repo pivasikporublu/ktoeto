@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>паматиги</title>
+</head>
+<body>
+    <table border="1">
+        <tr>
+            <td> TEAM 1</td>
+            <td colspan="2"></td>
+            <td> TEAM 2</td>
+        </tr>
+        <tr>
+            <td><button onclick="team_1_goal()">A</button></td>
+            <td rowspan="3">
+                <table>
+                    <tr>
+                        <td id="team_1_pos_5">5</td>
+                        <td id="team_1_pos_4">4</td>
+                    </tr>
+                    <tr>
+                        <td id="team_1_pos_6">6</td>
+                        <td id="team_1_pos_3">3</td>
+                    </tr>
+                    <tr>
+                        <td id="team_1_pos_1">1</td>
+                        <td id="team_1_pos_2">2</td>
+                    </tr>
+                </table>
+            </td>
+            <td rowspan="3">
+                <table>
+                    <tr>
+                        <td id="team_2_pos_2">2</td>
+                        <td id="team_2_pos_1">1</td>
+                    </tr>
+                    <tr>
+                        <td id="team_2_pos_3">3</td>
+                        <td id="team_2_pos_6">6</td>
+                    </tr>
+                    <tr>
+                        <td id="team_2_pos_4">4</td>
+                        <td id="team_2_pos_5">5</td>
+                    </tr>
+                </table>
+            </td>
+            <td><button onclick="team_2_goal()">A</button></td>
+        </tr>
+        <tr><td><button onclick="team_1_goal()">Б</button></td>
+            <td><button onclick="team_2_goal()">Б</button></td>
+        </tr>
+        <tr><td><button onclick="team_1_goal()">П</button></td>
+            <td><button onclick="team_2_goal()">П</button></td>
+        </tr>
+            <tr><td><button onclick="team_1_error()">О</button></td>
+            <td id="team_1_score">0</td>
+            <td id="team_2_score">0</td>
+            <td><button onclick="team_2_error()">О</button></td>
+        </tr>
+        <tr><td><button onclick="team_1_change()">З</button></td>
+            <td id="team_1_global_score">0</td>
+            <td id="team_2_global_score">0</td>
+            <td><button onclick="team_2_change()">З</button></td>
+        </tr>
+        
+    </table>
+    <script>
+        let team_1_numbers = ["1", "2", "3", "4", "5", "6"]
+        let team_2_numbers = ["1", "2", "3", "4", "5", "6"]
+        let team_1_position = ["team_1_pos_1","team_1_pos_2","team_1_pos_3","team_1_pos_4","team_1_pos_5","team_1_pos_6"]
+        let team_2_position = ["team_2_pos_1","team_2_pos_2","team_2_pos_3","team_2_pos_4","team_2_pos_5","team_2_pos_6"]
+        let score_limit = 25
+        let last_goal = 0
+        function team_1_pose(){
+            for(let i=0; i<6; i++){
+                document.getElementById(team_1_position[i]).innerText = team_1_numbers[i]
+            }
+        }
+        function team_2_pose(){
+            for(let i=0; i<6; i++){
+                document.getElementById(team_2_position[i]).innerText = team_2_numbers[i]
+            }
+        }
+        function team_1_move(){
+            if(last_goal==2){
+                let save = team_1_numbers[0]
+                for(let i=0; i<5; i++){
+                    team_1_numbers[i]=team_1_numbers[i+1]
+                }
+                team_1_numbers[5] = save
+                team_1_pose()
+            }
+        }
+        function team_2_move(){
+            if(last_goal==1){
+                let save = team_2_numbers[0]
+                for(let i=0; i<5; i++){
+                    team_2_numbers[i]=team_2_numbers[i+1]
+                }
+                team_2_numbers[5] = save
+                team_2_pose()
+            }
+        }
+        function team_1_change(){
+            let new_player = prompt('введите номер нового игрока:')
+            let new_position = prompt('укажите на место какого игрока установить нового игрока '+new_player+':')
+            if(new_player >= 0 && new_player%1==0){
+                for(let i=0; i<6; i++){
+                    if (new_position == team_1_numbers[i]){
+                        team_1_numbers[i] = new_player
+                        team_1_pose()
+                    }
+                }
+            }
+            else alert('указывайте только натуральные числа!!')
+        }
+        function team_2_change(){
+            let new_player = prompt('введите номер нового игрока:')
+            let new_position = prompt('укажите на место какого игрока установить игрока '+new_player+':')
+            if(new_player >= 0 && new_player%1==0){
+                for(let i=0; i<6; i++){
+                    if (new_position == team_2_numbers[i]){
+                        team_2_numbers[i] = new_player
+                        team_2_pose()
+                    }
+                }
+            }
+            else alert('указывайте только натуральные числа!!')
+        }
+        function is_2_by_2(){
+            if(document.getElementById('team_1_global_score').innerText=='2' &&
+            document.getElementById('team_2_global_score').innerText=='2'){
+                score_limit = 15
+            }
+            else score_limit=25
+        }
+        function is_two_limits(){
+            if(document.getElementById('team_1_score').innerText == score_limit-1 &&
+            document.getElementById('team_2_score').innerText == score_limit-1){
+                score_limit++
+            }
+        }
+        function team_1_limited(){
+            if(document.getElementById('team_1_score').innerText == score_limit){
+                if(document.getElementById('team_1_global_score').innerText==2){
+                    alert("команда 1 победила!!")
+                }
+                document.getElementById('team_1_global_score').innerText++
+                document.getElementById('team_1_score').innerText = 0
+                document.getElementById('team_2_score').innerText = 0
+                is_2_by_2()
+            }
+        }
+        function team_2_limited(){
+            is_two_limits()
+            if(document.getElementById('team_2_score').innerText == score_limit){
+                if(document.getElementById('team_2_global_score').innerText==2){
+                    alert("команда 2 победила!!")
+                }
+                document.getElementById('team_2_global_score').innerText++
+                document.getElementById('team_1_score').innerText = 0
+                document.getElementById('team_2_score').innerText = 0
+                is_2_by_2()
+            }
+        }
+        function team_1_goal(){
+            let team_1_checker = prompt('укажите номер атакующего')
+            let checker = false
+            for(let i=0; i<=5; i++){
+                if(team_1_checker == team_1_numbers[i]){
+                    document.getElementById('team_1_score').innerText++
+                    team_1_move()
+                    last_goal=1
+                    checker=true
+                    is_two_limits()
+                    team_1_limited()
+                }
+            }
+            if(checker == false)
+            alert('игрока с таким номером нет.')
+        }
+        function team_2_goal(){
+            let team_2_checker = prompt('укажите номер атакующего')
+            let checker = false
+            for(let i=0; i<=5; i++){
+                if(team_2_checker == team_2_numbers[i]){
+                    document.getElementById('team_2_score').innerText++
+                    team_2_move()
+                    last_goal=2
+                    checker=true
+                    is_two_limits()
+                    team_2_limited()
+                }
+            }
+            if(checker==false)
+            alert('игрока с таким номером нет.')
+        }        
+        function team_1_error(){
+            document.getElementById('team_2_score').innerText++
+            team_2_move()
+            last_goal=2
+            is_two_limits()
+            team_2_limited()
+        }
+        function team_2_error(){
+            document.getElementById('team_1_score').innerText++
+            team_1_move()
+            last_goal=1
+            is_two_limits()
+            team_1_limited()
+        }
+    </script>
+</body>
+</html>
